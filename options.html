@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CatPaglu Options</title>
+  <style>
+    :root {
+      --background: 0 0% 100%;
+      --foreground: 20 14.3% 4.1%;
+      --card: 0 0% 100%;
+      --card-foreground: 20 14.3% 4.1%;
+      --popover: 0 0% 100%;
+      --popover-foreground: 20 14.3% 4.1%;
+      --primary: 24.6 95% 53.1%;
+      --primary-foreground: 60 9.1% 97.8%;
+      --secondary: 60 4.8% 95.9%;
+      --secondary-foreground: 24 9.8% 10%;
+      --muted: 60 4.8% 95.9%;
+      --muted-foreground: 25 5.3% 44.7%;
+      --accent: 60 4.8% 95.9%;
+      --accent-foreground: 24 9.8% 10%;
+      --destructive: 0 84.2% 60.2%;
+      --destructive-foreground: 60 9.1% 97.8%;
+      --border: 20 5.9% 90%;
+      --input: 20 5.9% 90%;
+      --ring: 24.6 95% 53.1%;
+      --radius: 0.75rem;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 2rem;
+      background-color: hsl(var(--background));
+      color: hsl(var(--foreground));
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: hsl(var(--foreground));
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+    }
+
+    .description {
+      color: hsl(var(--muted-foreground));
+      margin-bottom: 1rem;
+    }
+
+    .card {
+      background-color: hsl(var(--card));
+      border-radius: var(--radius);
+      border: 1px solid hsl(var(--border));
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .card:hover {
+      border-color: hsl(var(--ring));
+    }
+
+    .site-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .site-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid hsl(var(--border));
+      transition: background-color 0.2s;
+    }
+
+    .site-item:last-child {
+      border-bottom: none;
+    }
+
+    .site-item:hover {
+      background-color: hsl(var(--muted));
+    }
+
+    .delete-btn {
+      background-color: transparent;
+      color: hsl(var(--destructive));
+      border: 1px solid hsl(var(--destructive));
+      padding: 0.25rem 0.75rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .delete-btn:hover {
+      background-color: hsl(var(--destructive));
+      color: hsl(var(--destructive-foreground));
+    }
+
+    .add-site {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .add-site input {
+      flex-grow: 1;
+      padding: 0.75rem 1rem;
+      border: 1px solid hsl(var(--input));
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      outline: none;
+      transition: all 0.2s;
+      background-color: transparent;
+    }
+
+    .add-site input:focus {
+      border-color: hsl(var(--ring));
+      box-shadow: 0 0 0 2px hsl(var(--ring) / 0.1);
+    }
+
+    .add-site button {
+      background-color: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
+      border: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    .add-site button:hover {
+      opacity: 0.9;
+    }
+
+    .no-sites {
+      color: hsl(var(--muted-foreground));
+      font-style: italic;
+      padding: 0.75rem 0;
+    }
+
+    #status {
+      color: hsl(var(--primary));
+      margin-top: 0.75rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>CatPaglu Settings</h1>
+    
+    <div class="description">
+      <p>Manage sites where you don't want the cat to appear.</p>
+    </div>
+    
+    <div class="card">
+      <h2>Blocked Sites</h2>
+      <div id="no-sites-message" class="no-sites">No sites are currently blocked.</div>
+      <ul id="site-list" class="site-list"></ul>
+      
+      <div class="add-site">
+        <input type="text" id="new-site" placeholder="example.com" />
+        <button id="add-site-btn">Add Site</button>
+      </div>
+      
+      <div id="status">Settings saved!</div>
+    </div>
+  </div>
+  
+  <script src="options.js"></script>
+</body>
+</html> 

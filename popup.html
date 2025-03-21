@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CatPaglu Controls</title>
+  <style>
+    :root {
+      --background: 0 0% 100%;
+      --foreground: 20 14.3% 4.1%;
+      --card: 0 0% 100%;
+      --card-foreground: 20 14.3% 4.1%;
+      --popover: 0 0% 100%;
+      --popover-foreground: 20 14.3% 4.1%;
+      --primary: 24.6 95% 53.1%;
+      --primary-foreground: 60 9.1% 97.8%;
+      --secondary: 60 4.8% 95.9%;
+      --secondary-foreground: 24 9.8% 10%;
+      --muted: 60 4.8% 95.9%;
+      --muted-foreground: 25 5.3% 44.7%;
+      --accent: 60 4.8% 95.9%;
+      --accent-foreground: 24 9.8% 10%;
+      --destructive: 0 84.2% 60.2%;
+      --destructive-foreground: 60 9.1% 97.8%;
+      --border: 20 5.9% 90%;
+      --input: 20 5.9% 90%;
+      --ring: 24.6 95% 53.1%;
+      --radius: 0.75rem;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 320px;
+      padding: 1rem;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: hsl(var(--background));
+      color: hsl(var(--foreground));
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: hsl(var(--foreground));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 500;
+      color: hsl(var(--foreground));
+      margin-bottom: 0.5rem;
+    }
+
+    .card {
+      background-color: hsl(var(--card));
+      border-radius: var(--radius);
+      border: 1px solid hsl(var(--border));
+      padding: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+      color: hsl(var(--foreground));
+    }
+
+    .toggle {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: hsl(var(--muted));
+      transition: .2s;
+      border-radius: 24px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: hsl(var(--primary));
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    button {
+      width: 100%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius);
+      font-weight: 500;
+      font-size: 14px;
+      line-height: 1;
+      height: 40px;
+      padding: 0 16px;
+      background-color: hsl(var(--primary));
+      color: hsl(var(--primary-foreground));
+      border: none;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    button.secondary {
+      background-color: hsl(var(--secondary));
+      color: hsl(var(--secondary-foreground));
+    }
+
+    #status {
+      color: hsl(var(--primary));
+      margin-top: 0.75rem;
+      font-size: 0.875rem;
+      text-align: center;
+      display: none;
+    }
+
+    .manage-sites {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid hsl(var(--border));
+    }
+
+    .site-list-container {
+      position: relative;
+      margin: 0.5rem 0;
+    }
+
+    .scroll-indicator {
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 16px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .scroll-indicator.top {
+      top: 0;
+      background: linear-gradient(to bottom, 
+        hsl(var(--background)) 0%,
+        hsl(var(--background) / 0.8) 50%,
+        transparent 100%
+      );
+      display: none;
+    }
+
+    .scroll-indicator.bottom {
+      bottom: 0;
+      background: linear-gradient(to top, 
+        hsl(var(--background)) 0%,
+        hsl(var(--background) / 0.8) 50%,
+        transparent 100%
+      );
+      display: none;
+    }
+
+    .site-list-container.can-scroll-up .scroll-indicator.top,
+    .site-list-container.can-scroll-down .scroll-indicator.bottom {
+      display: block;
+      opacity: 1;
+    }
+
+    .site-list {
+      list-style-type: none;
+      padding: 0.5rem 0;
+      margin: 0;
+      max-height: 160px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: hsl(var(--primary) / 0.3) transparent;
+      position: relative;
+    }
+
+    .site-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      transition: background-color 0.2s;
+      height: 40px;
+      box-sizing: border-box;
+    }
+
+    .site-item:hover {
+      background-color: hsl(var(--secondary));
+    }
+
+    .delete-btn {
+      background-color: transparent;
+      color: hsl(var(--destructive));
+      border: 1px solid hsl(var(--destructive));
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--radius);
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      height: auto;
+      width: auto;
+    }
+
+    .delete-btn:hover {
+      background-color: hsl(var(--destructive));
+      color: hsl(var(--destructive-foreground));
+    }
+
+    .add-site {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+
+    .add-site input {
+      flex-grow: 1;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid hsl(var(--input));
+      border-radius: var(--radius);
+      font-size: 0.875rem;
+      outline: none;
+      transition: all 0.2s;
+      background-color: transparent;
+    }
+
+    .add-site input:focus {
+      border-color: hsl(var(--ring));
+      box-shadow: 0 0 0 2px hsl(var(--ring) / 0.1);
+    }
+
+    .add-site button {
+      width: auto;
+      padding: 0 0.75rem;
+    }
+
+    .no-sites {
+      color: hsl(var(--muted-foreground));
+      font-style: italic;
+      padding: 0.5rem 0;
+      font-size: 0.875rem;
+    }
+
+    .expand-button {
+      width: 100%;
+      text-align: center;
+      background: none;
+      border: none;
+      color: hsl(var(--muted-foreground));
+      font-size: 0.875rem;
+      padding: 0.5rem;
+      cursor: pointer;
+      transition: color 0.2s;
+      margin-top: 0.5rem;
+    }
+
+    .expand-button:hover {
+      color: hsl(var(--primary));
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2><img src="icon128.png" alt="CatPaglu Icon" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 0.5rem;">CatPaglu Controls</h2>
+    
+    <div class="card">
+      <div class="toggle-container">
+        <span>Enable cat on this site</span>
+        <label class="toggle">
+          <input type="checkbox" id="enableOnCurrentSite" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+      
+      <button id="saveButton">Save Setting</button>
+      <div id="status">Settings saved!</div>
+
+      <button id="toggleManage" class="expand-button">Manage blocked sites</button>
+
+      <div id="manageSites" class="manage-sites hidden">
+        <h3>Blocked Sites</h3>
+        <div id="no-sites-message" class="no-sites">No sites are currently blocked.</div>
+        <div class="site-list-container">
+          <div class="scroll-indicator top"></div>
+          <ul id="site-list" class="site-list"></ul>
+          <div class="scroll-indicator bottom"></div>
+        </div>
+        <div class="add-site">
+          <input type="text" id="new-site" placeholder="example.com" />
+          <button id="add-site-btn">Add</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <script src="popup.js"></script>
+</body>
+</html> 
