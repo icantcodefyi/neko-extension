@@ -14,10 +14,30 @@ document.addEventListener('DOMContentLoaded', function() {
   const themeSelectContent = document.querySelector('.theme-select-content');
   const catPreview = document.getElementById('catPreview');
 
+  let hasUnsavedChanges = false;
+
+  // Function to update save button appearance
+  function updateSaveButton() {
+    if (hasUnsavedChanges) {
+      saveButton.style.backgroundColor = 'hsl(var(--destructive))';
+      saveButton.textContent = 'Save Changes*';
+    } else {
+      saveButton.style.backgroundColor = 'hsl(var(--primary))';
+      saveButton.textContent = 'Save Setting';
+    }
+  }
+
+  // Function to mark changes as unsaved
+  function markAsUnsaved() {
+    hasUnsavedChanges = true;
+    updateSaveButton();
+  }
+
   // Function to update cat preview
   function updateCatPreview(theme) {
     const selectedPreview = document.getElementById('selectedPreview');
     selectedPreview.src = `cats/${theme}.gif`;
+    markAsUnsaved();
   }
 
   // Load current cat theme
@@ -34,6 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
         item.dataset.selected = 'false';
       }
     });
+    hasUnsavedChanges = false;
+    updateSaveButton();
   });
 
   // Handle theme select click
@@ -137,7 +159,14 @@ document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.sync.get(['blockedSites'], function(result) {
       const blockedSites = result.blockedSites || [];
       enableToggle.checked = !isDomainBlocked(hostname, blockedSites);
+      hasUnsavedChanges = false;
+      updateSaveButton();
     });
+  });
+
+  // Add change event listener to the toggle
+  enableToggle.addEventListener('change', function() {
+    markAsUnsaved();
   });
 
   // Toggle manage sites section
@@ -186,6 +215,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         chrome.storage.sync.set({blockedSites: blockedSites}, function() {
+          hasUnsavedChanges = false;
+          updateSaveButton();
           showStatus('saved, refresh for changes.', 3000);
           updateSitesList(blockedSites);
         });
