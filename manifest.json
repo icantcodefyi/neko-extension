@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "CatPaglu",
+  "name": "cat-paglu",
   "version": "1.0",
   "description": "Adds a cute cat that follows your cursor around",
   "content_scripts": [
