@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "car-paglu",
-  "version": "1.0",
+  "version": "1.0.3",
   "description": "Adds a cute car that follows your cursor around",
   "content_scripts": [
     {

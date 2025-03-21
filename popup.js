@@ -195,6 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       const currentUrl = new URL(tabs[0].url);
       const hostname = currentUrl.hostname;
+      const currentTab = tabs[0];
       
       chrome.storage.sync.get(['blockedSites'], function(result) {
         let blockedSites = result.blockedSites || [];
@@ -217,7 +218,17 @@ document.addEventListener('DOMContentLoaded', function() {
         chrome.storage.sync.set({blockedSites: blockedSites}, function() {
           hasUnsavedChanges = false;
           updateSaveButton();
-          showStatus('saved, refresh for changes.', 3000);
+          
+          // Send message to content script to update in real-time
+          chrome.tabs.sendMessage(currentTab.id, { 
+            action: "update_settings",
+            data: { 
+              catTheme: selectedTheme,
+              blockedSites: blockedSites
+            }
+          });
+          
+          showStatus('Settings applied!', 2000);
           updateSitesList(blockedSites);
         });
       });
@@ -229,8 +240,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const newSite = newSiteInput.value.trim();
     if (!newSite) return;
     
-    chrome.storage.sync.get(['blockedSites'], function(result) {
+    chrome.storage.sync.get(['blockedSites', 'catTheme'], function(result) {
       let blockedSites = result.blockedSites || [];
+      const catTheme = result.catTheme || 'oneko';
       const variations = getDomainVariations(newSite);
       
       // Check if any variation is already blocked
@@ -240,6 +252,20 @@ document.addEventListener('DOMContentLoaded', function() {
         
         chrome.storage.sync.set({blockedSites: blockedSites}, function() {
           newSiteInput.value = '';
+          
+          // Notify all tabs about the change
+          chrome.tabs.query({}, function(tabs) {
+            tabs.forEach(tab => {
+              chrome.tabs.sendMessage(tab.id, {
+                action: "update_settings",
+                data: {
+                  catTheme: catTheme,
+                  blockedSites: blockedSites
+                }
+              });
+            });
+          });
+          
           showStatus('Site added!');
           updateSitesList(blockedSites);
         });
@@ -254,14 +280,29 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!e.target.classList.contains('delete-btn')) return;
     
     const siteToDelete = e.target.dataset.site;
-    chrome.storage.sync.get(['blockedSites'], function(result) {
+    chrome.storage.sync.get(['blockedSites', 'catTheme'], function(result) {
       let blockedSites = result.blockedSites || [];
+      const catTheme = result.catTheme || 'oneko';
+      
       // Remove all variations of the domain
       blockedSites = blockedSites.filter(site => 
         !getDomainVariations(siteToDelete).includes(site)
       );
       
       chrome.storage.sync.set({blockedSites: blockedSites}, function() {
+        // Notify all tabs about the change
+        chrome.tabs.query({}, function(tabs) {
+          tabs.forEach(tab => {
+            chrome.tabs.sendMessage(tab.id, {
+              action: "update_settings",
+              data: {
+                catTheme: catTheme,
+                blockedSites: blockedSites
+              }
+            });
+          });
+        });
+        
         showStatus('Site removed!');
         updateSitesList(blockedSites);
       });
