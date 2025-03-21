@@ -9,6 +9,26 @@ document.addEventListener('DOMContentLoaded', function() {
   const noSitesMessage = document.getElementById('no-sites-message');
   const newSiteInput = document.getElementById('new-site');
   const addSiteButton = document.getElementById('add-site-btn');
+  const catThemeSelect = document.getElementById('catThemeSelect');
+  const catPreview = document.getElementById('catPreview');
+
+  // Function to update cat preview
+  function updateCatPreview(theme) {
+    catPreview.src = `cats/${theme}.gif`;
+  }
+
+  // Load current cat theme
+  chrome.storage.sync.get(['catTheme'], function(result) {
+    const theme = result.catTheme || 'oneko';
+    catThemeSelect.value = theme;
+    updateCatPreview(theme);
+  });
+
+  // Handle cat theme changes - only update preview
+  catThemeSelect.addEventListener('change', function() {
+    const selectedTheme = catThemeSelect.value;
+    updateCatPreview(selectedTheme);
+  });
 
   // Update scroll indicators when the list scrolls
   function updateScrollIndicators() {
@@ -76,8 +96,14 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 
-  // Save current site setting
+  // Save current site setting and theme
   saveButton.addEventListener('click', function() {
+    const selectedTheme = catThemeSelect.value;
+    
+    // Save theme
+    chrome.storage.sync.set({ catTheme: selectedTheme });
+    
+    // Save site settings
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
       const currentUrl = new URL(tabs[0].url);
       const hostname = currentUrl.hostname;
@@ -101,12 +127,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         chrome.storage.sync.set({blockedSites: blockedSites}, function() {
-          showStatus('Settings saved!');
+          showStatus('saved, refresh for changes.', 3000);
           updateSitesList(blockedSites);
-          // Reload the current tab
-          chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-            chrome.tabs.reload(tabs[0].id);
-          });
         });
       });
     });
@@ -178,12 +200,12 @@ document.addEventListener('DOMContentLoaded', function() {
     updateScrollIndicators();
   }
 
-  // Helper function to show status message
-  function showStatus(message) {
+  // Helper function to show status message with custom duration
+  function showStatus(message, duration = 2000) {
     statusText.textContent = message;
     statusText.style.display = 'block';
     setTimeout(() => {
       statusText.style.display = 'none';
-    }, 2000);
+    }, duration);
   }
 }); 

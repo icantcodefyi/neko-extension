@@ -54,7 +54,7 @@
       align-items: center;
       justify-content: center;
       width: 100%;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
     }
 
     h3 {
@@ -309,13 +309,122 @@
     .hidden {
       display: none;
     }
+
+    .theme-select {
+      padding: 0.5rem;
+      border: 1px solid hsl(var(--input));
+      border-radius: var(--radius);
+      background-color: transparent;
+      color: hsl(var(--foreground));
+      font-size: 0.875rem;
+      outline: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      min-width: 120px;
+    }
+
+    .theme-select:focus {
+      border-color: hsl(var(--ring));
+      box-shadow: 0 0 0 2px hsl(var(--ring) / 0.1);
+    }
+
+    .theme-select option {
+      background-color: hsl(var(--background));
+      color: hsl(var(--foreground));
+    }
+
+    .preview-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .preview-label {
+      font-weight: 500;
+    }
+
+    .preview-box {
+      width: 32px;
+      height: 32px;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background-color: hsl(var(--background));
+    }
+
+    .preview-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    a {
+      color: hsl(var(--primary));
+      text-decoration: none;
+      font-weight: 500;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <h2><img src="icon128.png" alt="CatPaglu Icon" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 0.5rem;">cat-paglu controls</h2>
+    <h2><img src="icon128.png" alt="CatPaglu Icon" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 0.5rem;">car-paglu controls</h2>
     
     <div class="card">
+      <div class="toggle-container">
+        <span>Select Cat Theme</span>
+        <select id="catThemeSelect" class="theme-select">
+          <option value="oneko">Default Oneko</option>
+          <option value="ace">Ace</option>
+          <option value="air">Air</option>
+          <option value="black">Black</option>
+          <option value="blue">Blue</option>
+          <option value="calico">Calico</option>
+          <option value="colourful">Colourful</option>
+          <option value="dave">Dave</option>
+          <option value="earth">Earth</option>
+          <option value="fancy">Fancy</option>
+          <option value="fire">Fire</option>
+          <option value="ghetto">Ghetto</option>
+          <option value="ghost">Ghost</option>
+          <option value="gray">Gray</option>
+          <option value="holiday">Holiday</option>
+          <option value="jess">Jess</option>
+          <option value="kina">Kina</option>
+          <option value="kuramecha">Kuramecha</option>
+          <option value="lucky">Lucky</option>
+          <option value="lucy">Lucy</option>
+          <option value="marmalade">Marmalade</option>
+          <option value="mermaid">Mermaid</option>
+          <option value="mike">Mike</option>
+          <option value="moka">Moka</option>
+          <option value="neon">Neon</option>
+          <option value="orange">Orange</option>
+          <option value="peach">Peach</option>
+          <option value="pink">Pink</option>
+          <option value="rainbow">Rainbow</option>
+          <option value="robot">Robot</option>
+          <option value="rose">Rose</option>
+          <option value="royal">Royal</option>
+          <option value="silver">Silver</option>
+          <option value="silversky">Silversky</option>
+          <option value="socks">Socks</option>
+          <option value="spirit">Spirit</option>
+          <option value="spooky">Spooky</option>
+          <option value="usa">USA</option>
+          <option value="valentine">Valentine</option>
+          <option value="water">Water</option>
+        </select>
+      </div>
+
+      <div class="preview-container">
+        <div class="preview-label">Preview:</div>
+        <div class="preview-box">
+          <img id="catPreview" src="cats/oneko.gif" alt="Cat Preview" />
+        </div>
+      </div>
+
       <div class="toggle-container">
         <span>Enable cat on this site</span>
         <label class="toggle">
@@ -345,6 +454,10 @@
     </div>
   </div>
   
+  <footer style="padding-top: 1rem; text-align: center; font-size: 0.75rem; color: hsl(var(--muted-foreground));">
+    <a href="https://git.new/nekoo" target="_blank">github</a>
+  </footer>
+
   <script src="popup.js"></script>
 </body>
 </html> 

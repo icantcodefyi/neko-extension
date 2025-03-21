@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "cat-paglu",
+  "name": "car-paglu",
   "version": "1.0",
-  "description": "Adds a cute cat that follows your cursor around",
+  "description": "Adds a cute car that follows your cursor around",
   "content_scripts": [
     {
       "js": ["oneko.js"],
@@ -31,7 +31,10 @@
   "permissions": ["tabs", "storage"],
   "web_accessible_resources": [
     {
-      "resources": ["oneko.gif"],
+      "resources": [
+        "oneko.gif",
+        "options/*.gif"
+      ],
       "matches": ["<all_urls>"]
     }
   ]

@@ -2,7 +2,7 @@
   // First check if this site is in the blocked list
   const currentHostname = window.location.hostname;
   
-  chrome.storage.sync.get({blockedSites: []}, function(data) {
+  chrome.storage.sync.get({blockedSites: [], catTheme: 'oneko'}, function(data) {
     // If current site is in the blocked list, don't show the cat
     if (data.blockedSites.includes(currentHostname)) {
       return;
@@ -104,13 +104,16 @@
       nekoEl.style.top = `${nekoPosY - 16}px`;
       nekoEl.style.zIndex = 2147483647;
   
-      let nekoFile = chrome.runtime.getURL("oneko.gif");
-      const curScript = document.currentScript
-      if (curScript && curScript.dataset.cat) {
-        nekoFile = curScript.dataset.cat
+      // Use the selected cat theme
+      const catTheme = data.catTheme || 'oneko';
+      let nekoFile;
+      if (catTheme === 'oneko') {
+        nekoFile = chrome.runtime.getURL("oneko.gif");
+      } else {
+        nekoFile = chrome.runtime.getURL(`options/${catTheme}.gif`);
       }
+
       nekoEl.style.backgroundImage = `url(${nekoFile})`;
-  
       document.body.appendChild(nekoEl);
   
       document.addEventListener("mousemove", function (event) {
