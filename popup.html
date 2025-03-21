@@ -310,7 +310,28 @@
       display: none;
     }
 
+    .theme-selector {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .theme-select-group {
+      width: 100%;
+    }
+
+    .theme-select-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-top: 0.5rem;
+    }
+
     .theme-select {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       padding: 0.5rem;
       border: 1px solid hsl(var(--input));
       border-radius: var(--radius);
@@ -320,17 +341,97 @@
       outline: none;
       transition: all 0.2s;
       cursor: pointer;
-      min-width: 120px;
+      min-width: 140px;
+      user-select: none;
     }
 
-    .theme-select:focus {
+    .theme-select[data-state="open"] {
       border-color: hsl(var(--ring));
       box-shadow: 0 0 0 2px hsl(var(--ring) / 0.1);
     }
 
-    .theme-select option {
+    .theme-select-preview {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .theme-select-preview img,
+    .theme-preview {
+      width: 24px;
+      height: 24px;
+      border-radius: calc(var(--radius) - 2px);
+      object-fit: cover;
       background-color: hsl(var(--background));
-      color: hsl(var(--foreground));
+      border: 1px solid hsl(var(--border));
+    }
+
+    .theme-select-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      gap: 0.5rem;
+    }
+
+    .theme-select-caret {
+      width: 12px;
+      height: 12px;
+      transition: transform 0.2s;
+      opacity: 0.5;
+    }
+
+    .theme-select[data-state="open"] .theme-select-caret {
+      transform: rotate(180deg);
+    }
+
+    .theme-select-content {
+      position: absolute;
+      top: calc(100% + 5px);
+      left: 0;
+      width: 100%;
+      max-height: 200px;
+      overflow-y: auto;
+      background-color: hsl(var(--popover));
+      border: 1px solid hsl(var(--border));
+      border-radius: var(--radius);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 100;
+      opacity: 0;
+      transform-origin: top;
+      transform: scaleY(0.95);
+      transition: all 0.2s;
+      padding: 0.25rem;
+      display: none;
+    }
+
+    .theme-select[data-state="open"] .theme-select-content {
+      opacity: 1;
+      transform: scaleY(1);
+      display: block;
+    }
+
+    .theme-select-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.375rem 0.5rem;
+      cursor: pointer;
+      border-radius: calc(var(--radius) - 2px);
+      transition: all 0.2s;
+      font-size: 0.875rem;
+      line-height: 1.25;
+      min-height: 32px;
+    }
+
+    .theme-select-item:hover {
+      background-color: hsl(var(--accent));
+    }
+
+    .theme-select-item[data-selected="true"] {
+      background-color: hsl(var(--accent));
+      color: hsl(var(--accent-foreground));
+      font-weight: 500;
     }
 
     .preview-container {
@@ -341,20 +442,6 @@
 
     .preview-label {
       font-weight: 500;
-    }
-
-    .preview-box {
-      width: 32px;
-      height: 32px;
-      overflow: hidden;
-      border-radius: var(--radius);
-      background-color: hsl(var(--background));
-    }
-
-    .preview-box img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
     }
 
     a {
@@ -373,55 +460,179 @@
     
     <div class="card">
       <div class="toggle-container">
-        <span>Select Cat Theme</span>
-        <select id="catThemeSelect" class="theme-select">
-          <option value="oneko">Default Oneko</option>
-          <option value="ace">Ace</option>
-          <option value="air">Air</option>
-          <option value="black">Black</option>
-          <option value="blue">Blue</option>
-          <option value="calico">Calico</option>
-          <option value="colourful">Colourful</option>
-          <option value="dave">Dave</option>
-          <option value="earth">Earth</option>
-          <option value="fancy">Fancy</option>
-          <option value="fire">Fire</option>
-          <option value="ghetto">Ghetto</option>
-          <option value="ghost">Ghost</option>
-          <option value="gray">Gray</option>
-          <option value="holiday">Holiday</option>
-          <option value="jess">Jess</option>
-          <option value="kina">Kina</option>
-          <option value="kuramecha">Kuramecha</option>
-          <option value="lucky">Lucky</option>
-          <option value="lucy">Lucy</option>
-          <option value="marmalade">Marmalade</option>
-          <option value="mermaid">Mermaid</option>
-          <option value="mike">Mike</option>
-          <option value="moka">Moka</option>
-          <option value="neon">Neon</option>
-          <option value="orange">Orange</option>
-          <option value="peach">Peach</option>
-          <option value="pink">Pink</option>
-          <option value="rainbow">Rainbow</option>
-          <option value="robot">Robot</option>
-          <option value="rose">Rose</option>
-          <option value="royal">Royal</option>
-          <option value="silver">Silver</option>
-          <option value="silversky">Silversky</option>
-          <option value="socks">Socks</option>
-          <option value="spirit">Spirit</option>
-          <option value="spooky">Spooky</option>
-          <option value="usa">USA</option>
-          <option value="valentine">Valentine</option>
-          <option value="water">Water</option>
-        </select>
-      </div>
-
-      <div class="preview-container">
-        <div class="preview-label">Preview:</div>
-        <div class="preview-box">
-          <img id="catPreview" src="cats/oneko.gif" alt="Cat Preview" />
+        <span>Cat Theme</span>
+        <div class="theme-select" tabindex="0" role="combobox" aria-expanded="false" data-state="closed">
+          <div class="theme-select-trigger">
+            <div class="theme-select-preview">
+              <img id="selectedPreview" src="cats/oneko.gif" alt="Selected Cat Preview" />
+              <span class="theme-select-value">Oneko</span>
+            </div>
+            <svg class="theme-select-caret" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+          <div class="theme-select-content">
+            <div class="theme-select-item" data-value="oneko" data-selected="true">
+              <img class="theme-preview" src="cats/oneko.gif" alt="Oneko Preview" />
+              <span>Oneko</span>
+            </div>
+            <div class="theme-select-item" data-value="ace">
+              <img class="theme-preview" src="cats/ace.gif" alt="Ace Preview" />
+              <span>Ace</span>
+            </div>
+            <div class="theme-select-item" data-value="air">
+              <img class="theme-preview" src="cats/air.gif" alt="Air Preview" />
+              <span>Air</span>
+            </div>
+            <div class="theme-select-item" data-value="black">
+              <img class="theme-preview" src="cats/black.gif" alt="Black Preview" />
+              <span>Black</span>
+            </div>
+            <div class="theme-select-item" data-value="blue">
+              <img class="theme-preview" src="cats/blue.gif" alt="Blue Preview" />
+              <span>Blue</span>
+            </div>
+            <div class="theme-select-item" data-value="calico">
+              <img class="theme-preview" src="cats/calico.gif" alt="Calico Preview" />
+              <span>Calico</span>
+            </div>
+            <div class="theme-select-item" data-value="colourful">
+              <img class="theme-preview" src="cats/colourful.gif" alt="Colourful Preview" />
+              <span>Colourful</span>
+            </div>
+            <div class="theme-select-item" data-value="dave">
+              <img class="theme-preview" src="cats/dave.gif" alt="Dave Preview" />
+              <span>Dave</span>
+            </div>
+            <div class="theme-select-item" data-value="earth">
+              <img class="theme-preview" src="cats/earth.gif" alt="Earth Preview" />
+              <span>Earth</span>
+            </div>
+            <div class="theme-select-item" data-value="fancy">
+              <img class="theme-preview" src="cats/fancy.gif" alt="Fancy Preview" />
+              <span>Fancy</span>
+            </div>
+            <div class="theme-select-item" data-value="fire">
+              <img class="theme-preview" src="cats/fire.gif" alt="Fire Preview" />
+              <span>Fire</span>
+            </div>
+            <div class="theme-select-item" data-value="ghetto">
+              <img class="theme-preview" src="cats/ghetto.gif" alt="Ghetto Preview" />
+              <span>Ghetto</span>
+            </div>
+            <div class="theme-select-item" data-value="ghost">
+              <img class="theme-preview" src="cats/ghost.gif" alt="Ghost Preview" />
+              <span>Ghost</span>
+            </div>
+            <div class="theme-select-item" data-value="gray">
+              <img class="theme-preview" src="cats/gray.gif" alt="Gray Preview" />
+              <span>Gray</span>
+            </div>
+            <div class="theme-select-item" data-value="holiday">
+              <img class="theme-preview" src="cats/holiday.gif" alt="Holiday Preview" />
+              <span>Holiday</span>
+            </div>
+            <div class="theme-select-item" data-value="jess">
+              <img class="theme-preview" src="cats/jess.gif" alt="Jess Preview" />
+              <span>Jess</span>
+            </div>
+            <div class="theme-select-item" data-value="kina">
+              <img class="theme-preview" src="cats/kina.gif" alt="Kina Preview" />
+              <span>Kina</span>
+            </div>
+            <div class="theme-select-item" data-value="kuramecha">
+              <img class="theme-preview" src="cats/kuramecha.gif" alt="Kuramecha Preview" />
+              <span>Kuramecha</span>
+            </div>
+            <div class="theme-select-item" data-value="lucky">
+              <img class="theme-preview" src="cats/lucky.gif" alt="Lucky Preview" />
+              <span>Lucky</span>
+            </div>
+            <div class="theme-select-item" data-value="lucy">
+              <img class="theme-preview" src="cats/lucy.gif" alt="Lucy Preview" />
+              <span>Lucy</span>
+            </div>
+            <div class="theme-select-item" data-value="marmalade">
+              <img class="theme-preview" src="cats/marmalade.gif" alt="Marmalade Preview" />
+              <span>Marmalade</span>
+            </div>
+            <div class="theme-select-item" data-value="mermaid">
+              <img class="theme-preview" src="cats/mermaid.gif" alt="Mermaid Preview" />
+              <span>Mermaid</span>
+            </div>
+            <div class="theme-select-item" data-value="mike">
+              <img class="theme-preview" src="cats/mike.gif" alt="Mike Preview" />
+              <span>Mike</span>
+            </div>
+            <div class="theme-select-item" data-value="moka">
+              <img class="theme-preview" src="cats/moka.gif" alt="Moka Preview" />
+              <span>Moka</span>
+            </div>
+            <div class="theme-select-item" data-value="neon">
+              <img class="theme-preview" src="cats/neon.gif" alt="Neon Preview" />
+              <span>Neon</span>
+            </div>
+            <div class="theme-select-item" data-value="orange">
+              <img class="theme-preview" src="cats/orange.gif" alt="Orange Preview" />
+              <span>Orange</span>
+            </div>
+            <div class="theme-select-item" data-value="peach">
+              <img class="theme-preview" src="cats/peach.gif" alt="Peach Preview" />
+              <span>Peach</span>
+            </div>
+            <div class="theme-select-item" data-value="pink">
+              <img class="theme-preview" src="cats/pink.gif" alt="Pink Preview" />
+              <span>Pink</span>
+            </div>
+            <div class="theme-select-item" data-value="rainbow">
+              <img class="theme-preview" src="cats/rainbow.gif" alt="Rainbow Preview" />
+              <span>Rainbow</span>
+            </div>
+            <div class="theme-select-item" data-value="robot">
+              <img class="theme-preview" src="cats/robot.gif" alt="Robot Preview" />
+              <span>Robot</span>
+            </div>
+            <div class="theme-select-item" data-value="rose">
+              <img class="theme-preview" src="cats/rose.gif" alt="Rose Preview" />
+              <span>Rose</span>
+            </div>
+            <div class="theme-select-item" data-value="royal">
+              <img class="theme-preview" src="cats/royal.gif" alt="Royal Preview" />
+              <span>Royal</span>
+            </div>
+            <div class="theme-select-item" data-value="silver">
+              <img class="theme-preview" src="cats/silver.gif" alt="Silver Preview" />
+              <span>Silver</span>
+            </div>
+            <div class="theme-select-item" data-value="silversky">
+              <img class="theme-preview" src="cats/silversky.gif" alt="Silversky Preview" />
+              <span>Silversky</span>
+            </div>
+            <div class="theme-select-item" data-value="socks">
+              <img class="theme-preview" src="cats/socks.gif" alt="Socks Preview" />
+              <span>Socks</span>
+            </div>
+            <div class="theme-select-item" data-value="spirit">
+              <img class="theme-preview" src="cats/spirit.gif" alt="Spirit Preview" />
+              <span>Spirit</span>
+            </div>
+            <div class="theme-select-item" data-value="spooky">
+              <img class="theme-preview" src="cats/spooky.gif" alt="Spooky Preview" />
+              <span>Spooky</span>
+            </div>
+            <div class="theme-select-item" data-value="usa">
+              <img class="theme-preview" src="cats/usa.gif" alt="USA Preview" />
+              <span>USA</span>
+            </div>
+            <div class="theme-select-item" data-value="valentine">
+              <img class="theme-preview" src="cats/valentine.gif" alt="Valentine Preview" />
+              <span>Valentine</span>
+            </div>
+            <div class="theme-select-item" data-value="water">
+              <img class="theme-preview" src="cats/water.gif" alt="Water Preview" />
+              <span>Water</span>
+            </div>
+          </div>
         </div>
       </div>
 

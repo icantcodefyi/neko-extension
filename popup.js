@@ -9,25 +9,84 @@ document.addEventListener('DOMContentLoaded', function() {
   const noSitesMessage = document.getElementById('no-sites-message');
   const newSiteInput = document.getElementById('new-site');
   const addSiteButton = document.getElementById('add-site-btn');
-  const catThemeSelect = document.getElementById('catThemeSelect');
+  const themeSelect = document.querySelector('.theme-select');
+  const themeSelectValue = document.querySelector('.theme-select-value');
+  const themeSelectContent = document.querySelector('.theme-select-content');
   const catPreview = document.getElementById('catPreview');
 
   // Function to update cat preview
   function updateCatPreview(theme) {
-    catPreview.src = `cats/${theme}.gif`;
+    const selectedPreview = document.getElementById('selectedPreview');
+    selectedPreview.src = `cats/${theme}.gif`;
   }
 
   // Load current cat theme
   chrome.storage.sync.get(['catTheme'], function(result) {
     const theme = result.catTheme || 'oneko';
-    catThemeSelect.value = theme;
-    updateCatPreview(theme);
+    // Update the selected item and value text
+    const items = document.querySelectorAll('.theme-select-item');
+    items.forEach(item => {
+      if (item.dataset.value === theme) {
+        item.dataset.selected = 'true';
+        themeSelectValue.textContent = item.querySelector('span').textContent;
+        updateCatPreview(theme);
+      } else {
+        item.dataset.selected = 'false';
+      }
+    });
   });
 
-  // Handle cat theme changes - only update preview
-  catThemeSelect.addEventListener('change', function() {
-    const selectedTheme = catThemeSelect.value;
+  // Handle theme select click
+  themeSelect.addEventListener('click', function(e) {
+    const isOpen = themeSelect.dataset.state === 'open';
+    themeSelect.dataset.state = isOpen ? 'closed' : 'open';
+    themeSelect.setAttribute('aria-expanded', !isOpen);
+    e.stopPropagation();
+  });
+
+  // Handle theme item selection
+  themeSelectContent.addEventListener('click', function(e) {
+    e.stopPropagation(); // Stop event from bubbling up
+    const item = e.target.closest('.theme-select-item');
+    if (!item) return;
+
+    const selectedTheme = item.dataset.value;
+    const items = document.querySelectorAll('.theme-select-item');
+    
+    items.forEach(i => {
+      i.dataset.selected = i === item ? 'true' : 'false';
+    });
+
+    themeSelectValue.textContent = item.querySelector('span').textContent;
+    
+    // Ensure dropdown is closed
+    setTimeout(() => {
+      themeSelect.dataset.state = 'closed';
+      themeSelect.setAttribute('aria-expanded', 'false');
+    }, 0);
+    
     updateCatPreview(selectedTheme);
+  });
+
+  // Close select when clicking outside
+  document.addEventListener('click', function(e) {
+    if (!themeSelect.contains(e.target)) {
+      themeSelect.dataset.state = 'closed';
+      themeSelect.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Handle keyboard navigation
+  themeSelect.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      const isOpen = themeSelect.dataset.state === 'open';
+      themeSelect.dataset.state = isOpen ? 'closed' : 'open';
+      themeSelect.setAttribute('aria-expanded', !isOpen);
+    } else if (e.key === 'Escape') {
+      themeSelect.dataset.state = 'closed';
+      themeSelect.setAttribute('aria-expanded', 'false');
+    }
   });
 
   // Update scroll indicators when the list scrolls
@@ -98,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Save current site setting and theme
   saveButton.addEventListener('click', function() {
-    const selectedTheme = catThemeSelect.value;
+    const selectedTheme = document.querySelector('.theme-select-item[data-selected="true"]').dataset.value;
     
     // Save theme
     chrome.storage.sync.set({ catTheme: selectedTheme });
